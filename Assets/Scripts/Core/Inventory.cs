@@ -38,18 +38,21 @@ namespace MiniAdventure
             WoodAmount++;
         }
 
-        internal void AddAxe () {
-            if (FlintAmount > 0 && StickAmount > 0) {
-                FlintAmount--;
-                StickAmount--;
+        internal bool AddAxe () {
+            if (FlintAmount >= GameManager.Instance.FlintToCreateAxe && StickAmount >= GameManager.Instance.SticksToCreateAxe) {
+                FlintAmount = FlintAmount - GameManager.Instance.FlintToCreateAxe;
+                StickAmount = StickAmount - GameManager.Instance.SticksToCreateAxe;
                 AxeAmount++;
+                return true;
             }  
+
+            return false;
         }
 
         internal bool ConstructFire() {
-            if (FlintAmount > 0 && WoodAmount > 1) {
-                WoodAmount = WoodAmount - 2;
-                FlintAmount--;
+            if (FlintAmount >= GameManager.Instance.FlintToCreateFire && WoodAmount >= GameManager.Instance.WoodToCreateFire) {
+                WoodAmount = WoodAmount - GameManager.Instance.WoodToCreateFire;
+                FlintAmount = FlintAmount - GameManager.Instance.FlintToCreateFire;
                 return true;
             }
 

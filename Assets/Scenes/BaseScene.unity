@@ -8574,12 +8574,16 @@ MonoBehaviour:
   initialFlintAmount: 2
   initialStickAmount: 2
   InitialWarmth: 100
+  SticksToCreateAxe: 1
+  FlintToCreateAxe: 1
+  FlintToCreateFire: 1
+  WoodToCreateFire: 2
   TreeGrowTime: 2000
   warmthDecreaseRate: 20
   warmthIncreaseRate: 10
   fireplaceMaxDistance: 2
   showBoard: 0
-  showInfoBoard: 0
+  showInfoBoard: 1
 --- !u!4 &1863549460
 Transform:
   m_ObjectHideFlags: 0

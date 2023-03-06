@@ -35,6 +35,18 @@ namespace MiniAdventure
         [FoldoutGroup("World Settings")]
         internal float InitialWarmth = 100;
         [SerializeField]
+        [FoldoutGroup("Crafting Settings")]
+        internal int SticksToCreateAxe = 1;
+        [SerializeField]
+        [FoldoutGroup("Crafting Settings")]
+        internal int FlintToCreateAxe = 1;
+        [SerializeField]
+        [FoldoutGroup("Crafting Settings")]
+        internal int FlintToCreateFire = 1;
+        [SerializeField]
+        [FoldoutGroup("Crafting Settings")]
+        internal int WoodToCreateFire = 1;
+        [SerializeField]
         [FoldoutGroup("Time Settings")]
         internal int TreeGrowTime = 2000;
         [SerializeField]
