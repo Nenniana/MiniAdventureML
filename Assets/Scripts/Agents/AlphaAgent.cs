@@ -6,6 +6,7 @@ using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
 using MiniAdventure;
 using System;
+using MiniAdventure.Helpers;
 
 public class AlphaAgent : Agent
 {
@@ -13,10 +14,15 @@ public class AlphaAgent : Agent
 
     [SerializeField]
     private GameController gameController;
+    private InteractionType interactionType;
+
+    private bool isTraining = false;
 
     protected override void OnEnable()
     {
         base.OnEnable();
+
+        gameController.FirstGame(this);
 
         gameController.playerController.OnDeath += OnPlayerDeath;
         gameController.playerController.OnCoolingDown += OnPlayerCoolingDown;
@@ -38,31 +44,50 @@ public class AlphaAgent : Agent
         gameController.playerController.inventory.OnWoodAdded -= OnWoodAdded;
         gameController.playerController.inventory.OnFlintAdded -= OnFlintAdded;
         gameController.playerController.inventory.OnStickAdded -= OnStickAdded;
+        gameController.OnWoodChopped -= OnWoodChopped;
+        gameController.OnFireConstructed -= OnFireConstructed;
+    }
+
+    private void OnWoodChopped()
+    {
+        AddReward(RewardController.Instance.WoodChoppedReward);
+        // Debug.Log("Wood chopped Reward");
+    }
+
+    private void OnFireConstructed()
+    {
+        AddReward(RewardController.Instance.FireConstructedReward);
+        // Debug.Log("Fire constructed Reward");
     }
 
     private void OnFlintAdded()
     {
         AddReward(RewardController.Instance.FlintAddedReward);
+        // Debug.Log("Flint added Reward");
     }
 
     private void OnStickAdded()
     {
         AddReward(RewardController.Instance.StickAddedReward);
+        // Debug.Log("Stick added Reward");
     }
 
     private void OnWoodAdded()
     {
         AddReward(RewardController.Instance.WoodAddedReward);
+        // Debug.Log("Wood added Reward");
     }
 
     private void OnAxeAdded()
     {
         AddReward(RewardController.Instance.AxeAddedReward);
+        // Debug.Log("Axe added Reward");
     }
 
     private void OnPlayerWarmingUp()
     {
         AddReward(RewardController.Instance.WarmingUpReward);
+        // Debug.Log("Warming up Reward");
     }
 
     private void OnPlayerCoolingDown()
@@ -73,18 +98,30 @@ public class AlphaAgent : Agent
     private void OnPlayerDeath()
     {
         AddReward(RewardController.Instance.DeathReward);
+        // Debug.Log("Before Episode end reward: " + GetCumulativeReward());
         EndEpisode();
     }
 
     public override void OnEpisodeBegin()
     {
+        if (!isTraining) {
+            isTraining = true;
+        } else {
+            gameController.ResetGame();
+            // Debug.Log("After Episode end reward: " + GetCumulativeReward());
+        }
         // MaxStep = (int)Academy.Instance.EnvironmentParameters.GetWithDefault("per_agent_max_steps", 600.0f);
-        gameController.ResetGame();
+        
     }
 
     public override void CollectObservations(VectorSensor sensor)
     {
         sensor.AddObservation(gameController.state);
+        sensor.AddObservation(gameController.playerController.inventory.AxeAmount);
+        sensor.AddObservation(gameController.playerController.inventory.FlintAmount);
+        sensor.AddObservation(gameController.playerController.inventory.WoodAmount);
+        sensor.AddObservation(gameController.playerController.inventory.StickAmount);
+        sensor.AddObservation(gameController.playerController.Warmth);
     }
 
     public override void OnActionReceived(ActionBuffers actions)
@@ -93,11 +130,59 @@ public class AlphaAgent : Agent
         gameController.playerController.PerformAction(actions.DiscreteActions[1], actions.DiscreteActions[2]);
     }
 
+    /* public override void Heuristic(in ActionBuffers actionsOut)
+    {
+        // base.Heuristic(actionsOut);
+
+        ActionSegment<int> descreteActions = actionsOut.DiscreteActions;
+
+        if (Input.GetKey(KeyCode.I))
+        {
+            interactionType = InteractionType.Interact;
+        }
+        else if (Input.GetKey(KeyCode.C))
+        {
+            interactionType = InteractionType.ContructFire;
+        }
+        else
+        {
+            interactionType = InteractionType.Move;
+        }
+
+        if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            descreteActions[1] = 0;
+            descreteActions[2] = int.Parse(((int)interactionType).ToString().TrimEnd('0'));
+        }
+        else if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            descreteActions[1] = 1;
+            descreteActions[2] = int.Parse(((int)interactionType).ToString().TrimEnd('0'));
+        }
+        else if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            descreteActions[1] = 2;
+            descreteActions[2] = int.Parse(((int)interactionType).ToString().TrimEnd('0'));
+        }
+        else if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            descreteActions[1] = 3;
+            descreteActions[2] = int.Parse(((int)interactionType).ToString().TrimEnd('0'));
+        }
+        else if (Input.GetKeyDown(KeyCode.A))
+        {
+            descreteActions[0] = 1;
+        }
+    } */
+
     public override void AddReward(float reward)
     {
         base.AddReward(reward);
 
         OnRewardUpdated?.Invoke(GetCumulativeReward());
+
+        if (GetCumulativeReward() > 1000)
+            EndEpisode();
     }
 
     public override void SetReward(float reward)

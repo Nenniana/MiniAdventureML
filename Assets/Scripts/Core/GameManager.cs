@@ -9,7 +9,7 @@ namespace MiniAdventure
 {
     public class GameManager : MonoBehaviour
     {
-        public Action<int, float> OnAction;
+        public Action<int, int> OnAction;
         public Action<int> OnContructAxe;
         public Action OnTick;
 
@@ -46,6 +46,12 @@ namespace MiniAdventure
         [SerializeField]
         [FoldoutGroup("Distance Settings")]
         internal float fireplaceMaxDistance = 2f;
+        [SerializeField]
+        [FoldoutGroup("Visual Settings")]
+        internal bool showBoard = true;
+        [SerializeField]
+        [FoldoutGroup("Visual Settings")]
+        internal bool showInfoBoard = true;
 
         private InteractionType interactionType = InteractionType.Move;        
 
@@ -65,7 +71,7 @@ namespace MiniAdventure
             OnTick?.Invoke();
         }
 
-        private void Update() {
+        /* private void Update() {
             if (Input.GetKey(KeyCode.I)) {
                 interactionType = InteractionType.Interact;
             } else if (Input.GetKey(KeyCode.C))
@@ -77,24 +83,24 @@ namespace MiniAdventure
 
             if (Input.GetKeyDown(KeyCode.UpArrow))
             {
-                OnAction?.Invoke(0, (float)interactionType);
+                OnAction?.Invoke(0, (int)interactionType);
             }
             else if (Input.GetKeyDown(KeyCode.RightArrow))
             {
-                OnAction?.Invoke(1, (float)interactionType);
+                OnAction?.Invoke(1, (int)interactionType);
             }
             else if (Input.GetKeyDown(KeyCode.DownArrow))
             {
-                OnAction?.Invoke(2, (float)interactionType);
+                OnAction?.Invoke(2, (int)interactionType);
             }
             else if (Input.GetKeyDown(KeyCode.LeftArrow))
             {
-                OnAction?.Invoke(3, (float)interactionType);
+                OnAction?.Invoke(3, (int)interactionType);
             } 
             else if (Input.GetKeyDown(KeyCode.A)) 
             {
                 OnContructAxe?.Invoke(1);
             }
-        }
+        } */
     }
 }

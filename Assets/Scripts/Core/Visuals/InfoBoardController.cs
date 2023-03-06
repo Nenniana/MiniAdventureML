@@ -10,14 +10,17 @@ namespace MiniAdventure {
         private TMPro.TextMeshProUGUI reward, warmth, wood, flint, stick, axe;
 
         private PlayerController playerController;
+        private AlphaAgent agent;
 
-        internal void InitializeBoardVisuals(PlayerController _playerController) {
+        internal void InitializeBoardVisuals(PlayerController _playerController, AlphaAgent _agent) {
+            agent = _agent;
             playerController = _playerController;
             playerController.inventory.OnFlintAdded += OnFlintAdded;
             playerController.inventory.OnWoodAdded += OnWoodAdded;
             playerController.inventory.OnStickAdded += OnStickAdded;
             playerController.inventory.OnAxeAdded += OnAxeAdded;
             playerController.OnWarmthChange += OnWarmthChanged;
+            agent.OnRewardUpdated += OnRewardUpdated;
         }
 
         private void OnDisable() {
@@ -26,6 +29,7 @@ namespace MiniAdventure {
             playerController.inventory.OnStickAdded -= OnStickAdded;
             playerController.inventory.OnAxeAdded -= OnAxeAdded;
             playerController.OnWarmthChange -= OnWarmthChanged;
+            agent.OnRewardUpdated -= OnRewardUpdated;
         }
 
         internal void ResetBoardVisuals() {
@@ -59,6 +63,11 @@ namespace MiniAdventure {
         private void OnWarmthChanged()
         {
             warmth.text = "Warmth: " + playerController.Warmth;
+        }
+
+        private void OnRewardUpdated(float obj)
+        {
+            reward.text = "Reward: " + obj;
         }
     }
 }

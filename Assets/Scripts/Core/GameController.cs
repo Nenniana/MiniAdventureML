@@ -11,6 +11,8 @@ namespace MiniAdventure
 {
     public class GameController : MonoBehaviour
     {
+        public Action OnWoodChopped, OnFireConstructed;
+
         [SerializeField]
         internal GameObject tileVisualPrefab;
 
@@ -25,9 +27,16 @@ namespace MiniAdventure
         internal int worldObjects;
         internal PlayerController playerController;
 
+        internal AlphaAgent agent;
+
         // Start is called before the first frame update
-        void Start()
+        /* void Start()
         {
+            FirstGame();
+        } */
+
+        public void FirstGame(AlphaAgent _agent) {
+            agent = _agent;
             InitializeState();
             SetInitialPositions();
             InitializeBoardVisuals();
@@ -36,7 +45,12 @@ namespace MiniAdventure
         [Button]
         public void ResetGame() {
             SetInitialPositions();
-            boardVisuals.ResetBoardVisuals();
+            ResetBoardVisuals();
+        }
+
+        private void ResetBoardVisuals() {
+            if (GameManager.Instance.showBoard)
+                boardVisuals.ResetBoardVisuals();
         }
 
         private void InitializeState() {
@@ -68,10 +82,12 @@ namespace MiniAdventure
         {
             if (playerController == null) {
                 playerController = new PlayerController(TranslateToVector2Int(index), this);
-                infoBoardController.InitializeBoardVisuals(playerController);
+                if (GameManager.Instance.showInfoBoard)
+                    infoBoardController.InitializeBoardVisuals(playerController, agent);
             } else {
                 playerController.ResetPlayerController(TranslateToVector2Int(index));
-                infoBoardController.ResetBoardVisuals();
+                if (GameManager.Instance.showInfoBoard)
+                    infoBoardController.ResetBoardVisuals();
             }
         }
 
@@ -109,7 +125,8 @@ namespace MiniAdventure
         }
 
         private void InitializeBoardVisuals() {
-            boardVisuals = new BoardVisuals(this, tileVisualPrefab);
+            if (GameManager.Instance.showBoard)
+                boardVisuals = new BoardVisuals(this, tileVisualPrefab);
         }
 
         private bool OccupiedTile(Vector2Int position) {
@@ -143,6 +160,7 @@ namespace MiniAdventure
         private void ConstructFire(Vector2Int newPosition)
         {
             if (playerController.inventory.ConstructFire()) {
+                OnFireConstructed?.Invoke();
                 UpdatePosition(TranslateToInt(newPosition), WorldObject.Fireplace);
                 playerController.AddFire(newPosition);
             }
@@ -180,6 +198,7 @@ namespace MiniAdventure
             if (playerController.inventory.AxeAmount <= 0)
                 return false;
 
+            OnWoodChopped?.Invoke();
             UpdatePosition(indexOfInteraction, WorldObject.Ground);
             SpawnWood(TranslateToVector2Int(indexOfInteraction));
             return true;
@@ -213,7 +232,8 @@ namespace MiniAdventure
 
         private void UpdatePosition(int playerPosition, WorldObject worldObject) {
             state[playerPosition] = (float)worldObject;
-            boardVisuals.UpdateTileVisuals(playerPosition);
+            if (GameManager.Instance.showBoard)
+                boardVisuals.UpdateTileVisuals(playerPosition);
         }
     }
 }

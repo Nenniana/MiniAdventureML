@@ -16,9 +16,13 @@ internal class RewardController : MonoBehaviour
     [SerializeField]
     private float warmingUpReward = 10;
     [SerializeField]
-    private float coolingDownReward = -1;
+    private float coolingDownReward = -0.5f;
     [SerializeField]
     private float deathReward = -100;
+    [SerializeField]
+    private float fireConstructedReward = 30;
+    [SerializeField]
+    private float woodChoppedReward = 10;
 
     internal float FlintAddedReward { get => flintAddedReward; set => flintAddedReward = value; }
     internal float StickAddedReward { get => stickAddedReward; set => stickAddedReward = value; }
@@ -27,6 +31,8 @@ internal class RewardController : MonoBehaviour
     internal float WarmingUpReward { get => warmingUpReward; set => warmingUpReward = value; }
     internal float CoolingDownReward { get => coolingDownReward; set => coolingDownReward = value; }
     internal float DeathReward { get => deathReward; set => deathReward = value; }
+    internal float FireConstructedReward { get => fireConstructedReward; set => fireConstructedReward = value; }
+    internal float WoodChoppedReward { get => woodChoppedReward; set => woodChoppedReward = value; }
 
     private void Awake()
     {

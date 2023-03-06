@@ -35,11 +35,12 @@ namespace MiniAdventure
 
         internal void ResetPlayerController(Vector2Int _gridPosition)
         {
+            counterHeat = 0;
+            counterCold = 0;
+            fires.Clear();
             gridPosition = _gridPosition;
             inventory.ResetInventory(0, 0, 0, 0);
             Warmth = GameManager.Instance.InitialWarmth;
-            counterHeat = 0;
-            counterCold = 0;
         }
 
         private void OnTicked()
@@ -83,7 +84,11 @@ namespace MiniAdventure
             return false;
         }
 
-        internal void PerformAction(int dir, float interactionType) {
+        internal void PerformAction(int dir, int interactionType) {
+            interactionType = interactionType * 10;
+
+            // Debug.Log("PerformAction " + dir + " " + interactionType);
+
             if (dir == 0)
                 gameController.PlayerAction(gridPosition + new Vector2Int(0, 1), (InteractionType)interactionType);
             else if (dir == 1)
@@ -102,6 +107,7 @@ namespace MiniAdventure
         public void Die() {
             GameManager.Instance.OnAction -= PerformAction;
             GameManager.Instance.OnTick -= OnTicked;
+            GameManager.Instance.OnContructAxe -= ConstructAxe;
         }
     }
 }
