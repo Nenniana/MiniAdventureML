@@ -1,0 +1,29 @@
+{
+    "KeepWarm": {
+        "checkpoints": [
+            {
+                "steps": 49756,
+                "file_path": "results\\TestNewRewards\\KeepWarm\\KeepWarm-49756.onnx",
+                "reward": null,
+                "creation_time": 1678196090.8918943,
+                "auxillary_file_paths": [
+                    "results\\TestNewRewards\\KeepWarm\\KeepWarm-49756.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 49756,
+            "file_path": "results\\TestNewRewards\\KeepWarm.onnx",
+            "reward": null,
+            "creation_time": 1678196090.8918943,
+            "auxillary_file_paths": [
+                "results\\TestNewRewards\\KeepWarm\\KeepWarm-49756.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "0.30.0",
+        "torch_version": "1.7.1+cu110"
+    }
+}

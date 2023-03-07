@@ -83,7 +83,7 @@ public class AlphaAgent : Agent
 
     private void OnWarmedAgain()
     {
-        // Debug.Log("OnWarmedAgain");
+        Debug.Log("OnWarmedAgain");
         AddReward(RewardController.Instance.FinishedReward);
         EndEpisode();
     }
