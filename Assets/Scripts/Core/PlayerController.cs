@@ -8,13 +8,13 @@ namespace MiniAdventure
 {
     public class PlayerController
     {
-        public Action OnWarmthChange, OnDeath, OnWarmingUp, OnCoolingDown;
+        public Action OnWarmthChange, OnDeath, OnWarmingUp, OnCoolingDown, OnWarmAgain;
 
         internal Inventory inventory;
         internal Vector2Int gridPosition;
         private GameController gameController;
         private float warmth;
-        public float Warmth { get => warmth; private set => warmth = value; }
+        public float Warmth { get => warmth; private set { warmth = value; if (warmth > GameManager.Instance.InitialWarmth) OnWarmAgain?.Invoke(); } }
         private int counterHeat = 0;
         private int counterCold = 0;
 
@@ -47,10 +47,10 @@ namespace MiniAdventure
         {
             if (CloseToFire()) {
                 counterHeat++;
-                if (warmth < GameManager.Instance.InitialWarmth && counterHeat >= GameManager.Instance.warmthIncreaseRate) {
+                if (Warmth <= GameManager.Instance.InitialWarmth && counterHeat >= GameManager.Instance.warmthIncreaseRate) {
                     counterHeat = 0;
                     counterCold = 0;
-                    warmth++;
+                    Warmth++;
                     OnWarmthChange?.Invoke();
                     OnWarmingUp?.Invoke();
                 }
@@ -59,7 +59,7 @@ namespace MiniAdventure
                 if (counterCold >= GameManager.Instance.warmthDecreaseRate) {
                     counterHeat = 0;
                     counterCold = 0;
-                    warmth--;
+                    Warmth--;
                     OnWarmthChange?.Invoke();
                     OnCoolingDown?.Invoke();
 

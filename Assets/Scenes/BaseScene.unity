@@ -3401,6 +3401,12 @@ MonoBehaviour:
   deathReward: -100
   fireConstructedReward: 30
   woodChoppedReward: 10
+  finishedReward: 100
+  fireFailedReward: -10
+  axeFailedReward: -10
+  woodFailedReward: -5
+  interactFailedReward: -5
+  extraAxeReward: -10
 --- !u!4 &979486010
 Transform:
   m_ObjectHideFlags: 0
@@ -5935,9 +5941,9 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 0}
+  m_Model: {fileID: 5022602860645237092, guid: e520c8c563a0a5b45b9ec7dda32ee6b9, type: 3}
   m_InferenceDevice: 1
-  m_BehaviorType: 0
+  m_BehaviorType: 2
   m_BehaviorName: KeepWarm
   TeamId: 0
   m_UseChildSensors: 1
@@ -8573,7 +8579,7 @@ MonoBehaviour:
   initialTreeAmount: 3
   initialFlintAmount: 2
   initialStickAmount: 2
-  InitialWarmth: 100
+  InitialWarmth: 99
   SticksToCreateAxe: 1
   FlintToCreateAxe: 1
   FlintToCreateFire: 1
@@ -9152,7 +9158,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   symbol: '#'
-  textColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
+  textColor: {r: 0.9529412, g: 0.42745098, b: 0.5254902, a: 1}
 --- !u!1 &1931550243
 GameObject:
   m_ObjectHideFlags: 0

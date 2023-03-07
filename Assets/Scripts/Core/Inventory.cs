@@ -4,10 +4,7 @@ namespace MiniAdventure
 {
     internal class Inventory
     {
-        public Action OnWoodAdded;
-        public Action OnFlintAdded;
-        public Action OnStickAdded;
-        public Action OnAxeAdded;
+        public Action OnWoodAdded, OnFlintAdded, OnStickAdded, OnAxeAdded, OnAxeAttemptFail, OnFireAttemptFail;
 
         internal void ResetInventory (int flint, int stick, int wood, int axe) {
             FlintAmount = flint;
@@ -44,8 +41,9 @@ namespace MiniAdventure
                 StickAmount = StickAmount - GameManager.Instance.SticksToCreateAxe;
                 AxeAmount++;
                 return true;
-            }  
+            }
 
+            OnAxeAttemptFail?.Invoke();
             return false;
         }
 
@@ -56,6 +54,7 @@ namespace MiniAdventure
                 return true;
             }
 
+            OnFireAttemptFail?.Invoke();
             return false;
         }
     }

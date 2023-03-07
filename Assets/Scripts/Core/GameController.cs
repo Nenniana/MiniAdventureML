@@ -11,7 +11,7 @@ namespace MiniAdventure
 {
     public class GameController : MonoBehaviour
     {
-        public Action OnWoodChopped, OnFireConstructed;
+        public Action OnWoodChopped, OnFireConstructed, OnWoodAttemptFail, OnInteractFail;
 
         [SerializeField]
         internal GameObject tileVisualPrefab;
@@ -190,13 +190,16 @@ namespace MiniAdventure
                 return ChopTree(indexOfInteraction);
             }
 
+            OnInteractFail?.Invoke();
             return false;
         }
 
         private bool ChopTree(int indexOfInteraction)
         {
-            if (playerController.inventory.AxeAmount <= 0)
+            if (playerController.inventory.AxeAmount <= 0) {
+                OnWoodAttemptFail?.Invoke();
                 return false;
+            }
 
             OnWoodChopped?.Invoke();
             UpdatePosition(indexOfInteraction, WorldObject.Ground);

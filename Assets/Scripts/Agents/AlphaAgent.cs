@@ -23,6 +23,7 @@ public class AlphaAgent : Agent
         base.OnEnable();
 
         gameController.FirstGame(this);
+        // Debug.Log("After Episode end reward: " + GetCumulativeReward());
 
         gameController.playerController.OnDeath += OnPlayerDeath;
         gameController.playerController.OnCoolingDown += OnPlayerCoolingDown;
@@ -31,6 +32,13 @@ public class AlphaAgent : Agent
         gameController.playerController.inventory.OnWoodAdded += OnWoodAdded;
         gameController.playerController.inventory.OnFlintAdded += OnFlintAdded;
         gameController.playerController.inventory.OnStickAdded += OnStickAdded;
+        gameController.OnWoodChopped += OnWoodChopped;
+        gameController.OnFireConstructed += OnFireConstructed;
+        gameController.playerController.OnWarmAgain += OnWarmedAgain;
+        gameController.OnInteractFail += OnInteractFailed;
+        gameController.OnWoodAttemptFail += OnWoodAttemptFailed;
+        gameController.playerController.inventory.OnAxeAttemptFail += OnAxeAttemptFailed;
+        gameController.playerController.inventory.OnFireAttemptFail += OnFireAttemptFailed;
     }
 
     protected override void OnDisable()
@@ -46,6 +54,38 @@ public class AlphaAgent : Agent
         gameController.playerController.inventory.OnStickAdded -= OnStickAdded;
         gameController.OnWoodChopped -= OnWoodChopped;
         gameController.OnFireConstructed -= OnFireConstructed;
+        gameController.playerController.OnWarmAgain -= OnWarmedAgain;
+        gameController.OnInteractFail -= OnInteractFailed;
+        gameController.OnWoodAttemptFail -= OnWoodAttemptFailed;
+        gameController.playerController.inventory.OnAxeAttemptFail -= OnAxeAttemptFailed;
+        gameController.playerController.inventory.OnFireAttemptFail -= OnFireAttemptFailed;
+    }
+
+    private void OnFireAttemptFailed()
+    {
+        AddReward(RewardController.Instance.FireFailedReward);
+    }
+
+    private void OnAxeAttemptFailed()
+    {
+        AddReward(RewardController.Instance.AxeFailedReward);
+    }
+
+    private void OnWoodAttemptFailed()
+    {
+        AddReward(RewardController.Instance.WoodFailedReward);
+    }
+
+    private void OnInteractFailed()
+    {
+        AddReward(RewardController.Instance.InteractFailedReward);
+    }
+
+    private void OnWarmedAgain()
+    {
+        // Debug.Log("OnWarmedAgain");
+        AddReward(RewardController.Instance.FinishedReward);
+        EndEpisode();
     }
 
     private void OnWoodChopped()
@@ -80,7 +120,10 @@ public class AlphaAgent : Agent
 
     private void OnAxeAdded()
     {
-        AddReward(RewardController.Instance.AxeAddedReward);
+        if (gameController.playerController.inventory.AxeAmount < 1) 
+            AddReward(RewardController.Instance.AxeAddedReward);
+        else
+            AddReward(RewardController.Instance.ExtraAxeReward);
         // Debug.Log("Axe added Reward");
     }
 
@@ -92,7 +135,7 @@ public class AlphaAgent : Agent
 
     private void OnPlayerCoolingDown()
     {
-        AddReward(RewardController.Instance.CoolingDownReward);
+        // AddReward(RewardController.Instance.CoolingDownReward);
     }
 
     private void OnPlayerDeath()
@@ -180,9 +223,6 @@ public class AlphaAgent : Agent
         base.AddReward(reward);
 
         OnRewardUpdated?.Invoke(GetCumulativeReward());
-
-        if (GetCumulativeReward() > 1000)
-            EndEpisode();
     }
 
     public override void SetReward(float reward)
