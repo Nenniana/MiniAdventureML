@@ -20,13 +20,14 @@ namespace MiniAdventure
 
         private List<Vector2Int> fires;
 
-        public PlayerController (Vector2Int _gridPosition, GameController _gameController) {
+        public PlayerController(Vector2Int _gridPosition, GameController _gameController)
+        {
             gridPosition = _gridPosition;
             gameController = _gameController;
             fires = new List<Vector2Int>();
             Warmth = GameManager.Instance.InitialWarmth;
             inventory = new Inventory();
-            inventory.ResetInventory(0,0,0,0);
+            inventory.ResetInventory(0, 0, 0, 0);
 
             GameManager.Instance.OnContructAxe += ConstructAxe;
             GameManager.Instance.OnAction += PerformAction;
@@ -45,38 +46,48 @@ namespace MiniAdventure
 
         private void OnTicked()
         {
-            if (CloseToFire()) {
+            if (CloseToFire())
+            {
                 counterHeat++;
-                if (Warmth <= GameManager.Instance.InitialWarmth && counterHeat >= GameManager.Instance.warmthIncreaseRate) {
+                if (Warmth <= GameManager.Instance.InitialWarmth && counterHeat >= GameManager.Instance.warmthIncreaseRate)
+                {
                     counterHeat = 0;
                     counterCold = 0;
                     Warmth++;
                     OnWarmthChange?.Invoke();
                     OnWarmingUp?.Invoke();
                 }
-            } else {
+            }
+            else
+            {
                 counterCold++;
-                if (counterCold >= GameManager.Instance.warmthDecreaseRate) {
+                if (counterCold >= GameManager.Instance.warmthDecreaseRate)
+                {
                     counterHeat = 0;
                     counterCold = 0;
                     Warmth--;
                     OnWarmthChange?.Invoke();
                     OnCoolingDown?.Invoke();
 
-                    if (warmth <= 0) {
+                    if (warmth <= 0)
+                    {
                         OnDeath?.Invoke();
                     }
                 }
             }
         }
 
-        internal void AddFire(Vector2Int _position) {
+        internal void AddFire(Vector2Int _position)
+        {
             fires.Add(_position);
         }
 
-        private bool CloseToFire() {
-            foreach (var fire in fires) {
-                if (Vector2Int.Distance(gridPosition, fire) < GameManager.Instance.fireplaceMaxDistance) {
+        private bool CloseToFire()
+        {
+            foreach (var fire in fires)
+            {
+                if (Vector2Int.Distance(gridPosition, fire) < GameManager.Instance.fireplaceMaxDistance)
+                {
                     return true;
                 }
             }
@@ -84,7 +95,8 @@ namespace MiniAdventure
             return false;
         }
 
-        internal void PerformAction(int dir, int interactionType) {
+        internal void PerformAction(int dir, int interactionType)
+        {
             interactionType = interactionType * 10;
 
             // Debug.Log("PerformAction " + dir + " " + interactionType);
@@ -99,12 +111,14 @@ namespace MiniAdventure
                 gameController.PlayerAction(gridPosition + new Vector2Int(-1, 0), (InteractionType)interactionType);
         }
 
-        internal void ConstructAxe(int choice) {
+        internal void ConstructAxe(int choice)
+        {
             if (choice == 1)
-                inventory.AddAxe();
+                inventory.BuildAxe();
         }
 
-        public void Die() {
+        public void Die()
+        {
             GameManager.Instance.OnAction -= PerformAction;
             GameManager.Instance.OnTick -= OnTicked;
             GameManager.Instance.OnContructAxe -= ConstructAxe;

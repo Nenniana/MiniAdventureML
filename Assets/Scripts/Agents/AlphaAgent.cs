@@ -120,7 +120,7 @@ public class AlphaAgent : Agent
 
     private void OnAxeAdded()
     {
-        if (gameController.playerController.inventory.AxeAmount < 1) 
+        if (gameController.playerController.inventory.AxeAmount < 1)
             AddReward(RewardController.Instance.AxeAddedReward);
         else
             AddReward(RewardController.Instance.ExtraAxeReward);
@@ -147,14 +147,17 @@ public class AlphaAgent : Agent
 
     public override void OnEpisodeBegin()
     {
-        if (!isTraining) {
+        if (!isTraining)
+        {
             isTraining = true;
-        } else {
+        }
+        else
+        {
             gameController.ResetGame();
             // Debug.Log("After Episode end reward: " + GetCumulativeReward());
         }
         // MaxStep = (int)Academy.Instance.EnvironmentParameters.GetWithDefault("per_agent_max_steps", 600.0f);
-        
+
     }
 
     public override void CollectObservations(VectorSensor sensor)
@@ -230,5 +233,13 @@ public class AlphaAgent : Agent
         base.SetReward(reward);
 
         OnRewardUpdated?.Invoke(GetCumulativeReward());
+    }
+
+    public override void WriteDiscreteActionMask(IDiscreteActionMask actionMask)
+    {
+        if (!gameController.playerController.inventory.IsAxeBuildable())
+            actionMask.SetActionEnabled(0, 1, false);
+        if (!gameController.playerController.inventory.IsFireConstructable())
+            actionMask.SetActionEnabled(2, 2, false);
     }
 }

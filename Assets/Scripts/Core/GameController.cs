@@ -35,7 +35,8 @@ namespace MiniAdventure
             FirstGame();
         } */
 
-        public void FirstGame(AlphaAgent _agent) {
+        public void FirstGame(AlphaAgent _agent)
+        {
             agent = _agent;
             InitializeState();
             SetInitialPositions();
@@ -43,35 +44,46 @@ namespace MiniAdventure
         }
 
         [Button]
-        public void ResetGame() {
+        public void ResetGame()
+        {
             SetInitialPositions();
             ResetBoardVisuals();
         }
 
-        private void ResetBoardVisuals() {
+        private void ResetBoardVisuals()
+        {
             if (GameManager.Instance.showBoard)
                 boardVisuals.ResetBoardVisuals();
         }
 
-        private void InitializeState() {
+        private void InitializeState()
+        {
             stateSize = GameManager.Instance.height * GameManager.Instance.width;
             worldObjects = GameManager.Instance.initialFlintAmount + GameManager.Instance.initialStickAmount + GameManager.Instance.initialTreeAmount + 1;
         }
 
-        private void SetInitialPositions() {
+        private void SetInitialPositions()
+        {
             state = new float[stateSize];
             int[] initialPositions = Enumerable.Range(0, 63).OrderBy(arg => Guid.NewGuid()).Take(worldObjects).ToArray();
 
-            for (int i = 0; i < initialPositions.Length; i++) { 
-                if (i == 0) {
+            for (int i = 0; i < initialPositions.Length; i++)
+            {
+                if (i == 0)
+                {
                     state[initialPositions[i]] = ConvertEnumToFloat(WorldObject.Player);
                     CreatePlayer(initialPositions[i]);
                 }
-                else if (i < GameManager.Instance.initialFlintAmount + 1) {
+                else if (i < GameManager.Instance.initialFlintAmount + 1)
+                {
                     state[initialPositions[i]] = ConvertEnumToFloat(WorldObject.Flint);
-                } else if (i < GameManager.Instance.initialFlintAmount + GameManager.Instance.initialStickAmount + 1) {
+                }
+                else if (i < GameManager.Instance.initialFlintAmount + GameManager.Instance.initialStickAmount + 1)
+                {
                     state[initialPositions[i]] = ConvertEnumToFloat(WorldObject.Stick);
-                } else {
+                }
+                else
+                {
                     state[initialPositions[i]] = ConvertEnumToFloat(WorldObject.TreeFull);
                     // PlantTree(initialPositions[i]);
                 }
@@ -80,22 +92,27 @@ namespace MiniAdventure
 
         private void CreatePlayer(int index)
         {
-            if (playerController == null) {
+            if (playerController == null)
+            {
                 playerController = new PlayerController(TranslateToVector2Int(index), this);
                 if (GameManager.Instance.showInfoBoard)
                     infoBoardController.InitializeBoardVisuals(playerController, agent);
-            } else {
+            }
+            else
+            {
                 playerController.ResetPlayerController(TranslateToVector2Int(index));
                 if (GameManager.Instance.showInfoBoard)
                     infoBoardController.ResetBoardVisuals();
             }
         }
 
-        private Vector2Int TranslateToVector2Int(int index) {
+        private Vector2Int TranslateToVector2Int(int index)
+        {
             return new Vector2Int(index / 8, index % 8);
         }
 
-        private int TranslateToInt(Vector2Int position) {
+        private int TranslateToInt(Vector2Int position)
+        {
             return position.x * 8 + position.y;
         }
 
@@ -120,16 +137,19 @@ namespace MiniAdventure
             boardVisuals.UpdateTileVisuals(index);
         } */
 
-        private float ConvertEnumToFloat(WorldObject worldObject) {
+        private float ConvertEnumToFloat(WorldObject worldObject)
+        {
             return (float)worldObject;
         }
 
-        private void InitializeBoardVisuals() {
+        private void InitializeBoardVisuals()
+        {
             if (GameManager.Instance.showBoard)
                 boardVisuals = new BoardVisuals(this, tileVisualPrefab);
         }
 
-        private bool OccupiedTile(Vector2Int position) {
+        private bool OccupiedTile(Vector2Int position)
+        {
             return (state[TranslateToInt(position)] != (float)WorldObject.Ground);
         }
 
@@ -144,12 +164,14 @@ namespace MiniAdventure
             if (OccupiedTile(newPosition))
                 return false;
 
-            if (type == InteractionType.Move) {
+            if (type == InteractionType.Move)
+            {
                 MovePlayer(newPosition);
                 return true;
             }
 
-            if (type == InteractionType.ContructFire) {
+            if (type == InteractionType.ContructFire)
+            {
                 ConstructFire(newPosition);
                 return true;
             }
@@ -159,7 +181,8 @@ namespace MiniAdventure
 
         private void ConstructFire(Vector2Int newPosition)
         {
-            if (playerController.inventory.ConstructFire()) {
+            if (playerController.inventory.ConstructFire())
+            {
                 OnFireConstructed?.Invoke();
                 UpdatePosition(TranslateToInt(newPosition), WorldObject.Fireplace);
                 playerController.AddFire(newPosition);
@@ -169,13 +192,15 @@ namespace MiniAdventure
         private bool AttemptInteract(Vector2Int newPlayerPosition)
         {
             int indexOfInteraction = TranslateToInt(newPlayerPosition);
-            
-            if (state[indexOfInteraction] == (float)WorldObject.Flint) {
+
+            if (state[indexOfInteraction] == (float)WorldObject.Flint)
+            {
                 UpdatePosition(indexOfInteraction, WorldObject.Ground);
                 playerController.inventory.AddFlint();
                 return true;
             }
-            else if (state[indexOfInteraction] == (float)WorldObject.WoodLog) {
+            else if (state[indexOfInteraction] == (float)WorldObject.WoodLog)
+            {
                 UpdatePosition(indexOfInteraction, WorldObject.Ground);
                 playerController.inventory.AddWood();
                 return true;
@@ -186,7 +211,8 @@ namespace MiniAdventure
                 playerController.inventory.AddStick();
                 return true;
             }
-            else if (state[indexOfInteraction] == (float)WorldObject.TreeFull) {
+            else if (state[indexOfInteraction] == (float)WorldObject.TreeFull)
+            {
                 return ChopTree(indexOfInteraction);
             }
 
@@ -196,7 +222,8 @@ namespace MiniAdventure
 
         private bool ChopTree(int indexOfInteraction)
         {
-            if (playerController.inventory.AxeAmount <= 0) {
+            if (playerController.inventory.AxeAmount <= 0)
+            {
                 OnWoodAttemptFail?.Invoke();
                 return false;
             }
@@ -207,14 +234,16 @@ namespace MiniAdventure
             return true;
         }
 
-        private void SpawnWood(Vector2Int treePosition) {
+        private void SpawnWood(Vector2Int treePosition)
+        {
             CheckWood(treePosition + new Vector2Int(0, 1));
             CheckWood(treePosition + new Vector2Int(0, -1));
             CheckWood(treePosition + new Vector2Int(1, 0));
             CheckWood(treePosition + new Vector2Int(-1, 0));
         }
 
-        private void CheckWood(Vector2Int woodPosition) {
+        private void CheckWood(Vector2Int woodPosition)
+        {
             if (IsValidTile(woodPosition) && !OccupiedTile(woodPosition))
                 UpdatePosition(TranslateToInt(woodPosition), WorldObject.WoodLog);
         }
@@ -225,7 +254,8 @@ namespace MiniAdventure
             UpdatePosition(indexOfInteraction, WorldObject.Ground);
         }
 
-        private void MovePlayer(Vector2Int playerPosition) {
+        private void MovePlayer(Vector2Int playerPosition)
+        {
             UpdatePosition(TranslateToInt(playerController.gridPosition), WorldObject.Ground);
 
             playerController.gridPosition = playerPosition;
@@ -233,7 +263,8 @@ namespace MiniAdventure
             UpdatePosition(TranslateToInt(playerController.gridPosition), WorldObject.Player);
         }
 
-        private void UpdatePosition(int playerPosition, WorldObject worldObject) {
+        private void UpdatePosition(int playerPosition, WorldObject worldObject)
+        {
             state[playerPosition] = (float)worldObject;
             if (GameManager.Instance.showBoard)
                 boardVisuals.UpdateTileVisuals(playerPosition);
