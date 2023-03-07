@@ -111,6 +111,22 @@ namespace MiniAdventure
                 gameController.PlayerAction(gridPosition + new Vector2Int(-1, 0), (InteractionType)interactionType);
         }
 
+        internal bool CanPerformAction(int dir, int interactionType)
+        {
+            interactionType = interactionType * 10;
+
+            if (dir == 0)
+                return gameController.CanPerformAction(gridPosition + new Vector2Int(0, 1), (InteractionType)interactionType);
+            else if (dir == 1)
+                return gameController.CanPerformAction(gridPosition + new Vector2Int(1, 0), (InteractionType)interactionType);
+            else if (dir == 2)
+                return gameController.CanPerformAction(gridPosition + new Vector2Int(0, -1), (InteractionType)interactionType);
+            else if (dir == 3)
+                return gameController.CanPerformAction(gridPosition + new Vector2Int(-1, 0), (InteractionType)interactionType);
+            
+            return false;
+        }
+
         internal void ConstructAxe(int choice)
         {
             if (choice == 1)

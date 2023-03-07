@@ -63,7 +63,7 @@ engine_settings:
   no_graphics: false
 environment_parameters: null
 checkpoint_settings:
-  run_id: TestNewRewardBackground
+  run_id: TestActionMask
   initialize_from: null
   load_model: false
   resume: false

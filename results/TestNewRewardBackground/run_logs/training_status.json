@@ -2,49 +2,58 @@
     "KeepWarm": {
         "checkpoints": [
             {
-                "steps": 499988,
-                "file_path": "results\\TestNewRewardBackground\\KeepWarm\\KeepWarm-499988.onnx",
-                "reward": -120.22222222222223,
-                "creation_time": 1678198642.447306,
+                "steps": 499913,
+                "file_path": "results\\TestNewRewardBackground\\KeepWarm\\KeepWarm-499913.onnx",
+                "reward": -125.84615384615384,
+                "creation_time": 1678200984.4110212,
                 "auxillary_file_paths": [
-                    "results\\TestNewRewardBackground\\KeepWarm\\KeepWarm-499988.pt"
+                    "results\\TestNewRewardBackground\\KeepWarm\\KeepWarm-499913.pt"
                 ]
             },
             {
-                "steps": 999936,
-                "file_path": "results\\TestNewRewardBackground\\KeepWarm\\KeepWarm-999936.onnx",
-                "reward": -109.375,
-                "creation_time": 1678199883.0724628,
+                "steps": 999957,
+                "file_path": "results\\TestNewRewardBackground\\KeepWarm\\KeepWarm-999957.onnx",
+                "reward": -125.07692307692308,
+                "creation_time": 1678201859.688522,
                 "auxillary_file_paths": [
-                    "results\\TestNewRewardBackground\\KeepWarm\\KeepWarm-999936.pt"
+                    "results\\TestNewRewardBackground\\KeepWarm\\KeepWarm-999957.pt"
                 ]
             },
             {
-                "steps": 1039552,
-                "file_path": "results\\TestNewRewardBackground\\KeepWarm\\KeepWarm-1039552.onnx",
-                "reward": null,
-                "creation_time": 1678199992.8301187,
+                "steps": 1499913,
+                "file_path": "results\\TestNewRewardBackground\\KeepWarm\\KeepWarm-1499913.onnx",
+                "reward": -107.025,
+                "creation_time": 1678202741.4732764,
                 "auxillary_file_paths": [
-                    "results\\TestNewRewardBackground\\KeepWarm\\KeepWarm-1039552.pt"
+                    "results\\TestNewRewardBackground\\KeepWarm\\KeepWarm-1499913.pt"
                 ]
             },
             {
-                "steps": 1056192,
-                "file_path": "results\\TestNewRewardBackground\\KeepWarm\\KeepWarm-1056192.onnx",
-                "reward": null,
-                "creation_time": 1678200063.5673194,
+                "steps": 1999965,
+                "file_path": "results\\TestNewRewardBackground\\KeepWarm\\KeepWarm-1999965.onnx",
+                "reward": -114.72727272727273,
+                "creation_time": 1678203664.8137364,
                 "auxillary_file_paths": [
-                    "results\\TestNewRewardBackground\\KeepWarm\\KeepWarm-1056192.pt"
+                    "results\\TestNewRewardBackground\\KeepWarm\\KeepWarm-1999965.pt"
+                ]
+            },
+            {
+                "steps": 2064905,
+                "file_path": "results\\TestNewRewardBackground\\KeepWarm\\KeepWarm-2064905.onnx",
+                "reward": -109.36363636363636,
+                "creation_time": 1678203783.9734423,
+                "auxillary_file_paths": [
+                    "results\\TestNewRewardBackground\\KeepWarm\\KeepWarm-2064905.pt"
                 ]
             }
         ],
         "final_checkpoint": {
-            "steps": 1056192,
+            "steps": 2064905,
             "file_path": "results\\TestNewRewardBackground\\KeepWarm.onnx",
-            "reward": null,
-            "creation_time": 1678200063.5673194,
+            "reward": -109.36363636363636,
+            "creation_time": 1678203783.9734423,
             "auxillary_file_paths": [
-                "results\\TestNewRewardBackground\\KeepWarm\\KeepWarm-1056192.pt"
+                "results\\TestNewRewardBackground\\KeepWarm\\KeepWarm-2064905.pt"
             ]
         }
     },

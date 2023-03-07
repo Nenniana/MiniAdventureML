@@ -63,22 +63,22 @@ public class AlphaAgent : Agent
 
     private void OnFireAttemptFailed()
     {
-        AddReward(RewardController.Instance.FireFailedReward);
+        // AddReward(RewardController.Instance.FireFailedReward);
     }
 
     private void OnAxeAttemptFailed()
     {
-        AddReward(RewardController.Instance.AxeFailedReward);
+        // AddReward(RewardController.Instance.AxeFailedReward);
     }
 
     private void OnWoodAttemptFailed()
     {
-        AddReward(RewardController.Instance.WoodFailedReward);
+        // AddReward(RewardController.Instance.WoodFailedReward);
     }
 
     private void OnInteractFailed()
     {
-        AddReward(RewardController.Instance.InteractFailedReward);
+        // AddReward(RewardController.Instance.InteractFailedReward);
     }
 
     private void OnWarmedAgain()
@@ -172,10 +172,61 @@ public class AlphaAgent : Agent
 
     public override void OnActionReceived(ActionBuffers actions)
     {
-        gameController.playerController.ConstructAxe(actions.DiscreteActions[0]);
-        gameController.playerController.PerformAction(actions.DiscreteActions[1], actions.DiscreteActions[2]);
+        if (actions.DiscreteActions[0] == 0)
+            gameController.playerController.ConstructAxe(actions.DiscreteActions[1]);
+        else if (actions.DiscreteActions[0] == 1)
+            gameController.playerController.PerformAction(actions.DiscreteActions[2], 0);
+        else if (actions.DiscreteActions[0] == 2)
+            gameController.playerController.PerformAction(actions.DiscreteActions[3], 1);
+        else if (actions.DiscreteActions[0] == 3)
+            gameController.playerController.PerformAction(actions.DiscreteActions[4], 2);
     }
 
+    public override void AddReward(float reward)
+    {
+        base.AddReward(reward);
+
+        OnRewardUpdated?.Invoke(GetCumulativeReward());
+    }
+
+    public override void SetReward(float reward)
+    {
+        base.SetReward(reward);
+
+        OnRewardUpdated?.Invoke(GetCumulativeReward());
+    }
+
+    public override void WriteDiscreteActionMask(IDiscreteActionMask actionMask)
+    {
+        if (!gameController.playerController.inventory.IsAxeBuildable()) {
+            actionMask.SetActionEnabled(0, 0, false);
+            actionMask.SetActionEnabled(1, 1, false);
+        }
+        if (!gameController.playerController.inventory.IsFireConstructable()) {
+            actionMask.SetActionEnabled(0, 3, false);
+            actionMask.SetActionEnabled(4, 0, false);
+            actionMask.SetActionEnabled(4, 1, false);
+            actionMask.SetActionEnabled(4, 2, false);
+            actionMask.SetActionEnabled(4, 3, false);
+        }
+
+        int counter = 0;
+
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 3; j++) {
+                bool canPerform = gameController.playerController.CanPerformAction(i, j);
+                
+                if (j == 1 && canPerform)
+                    counter++;
+
+                actionMask.SetActionEnabled(j + 2, i, canPerform);
+            }
+        }
+
+        if (counter == 4)
+            actionMask.SetActionEnabled(0, 3, false);
+    }
+    
     /* public override void Heuristic(in ActionBuffers actionsOut)
     {
         // base.Heuristic(actionsOut);
@@ -220,26 +271,4 @@ public class AlphaAgent : Agent
             descreteActions[0] = 1;
         }
     } */
-
-    public override void AddReward(float reward)
-    {
-        base.AddReward(reward);
-
-        OnRewardUpdated?.Invoke(GetCumulativeReward());
-    }
-
-    public override void SetReward(float reward)
-    {
-        base.SetReward(reward);
-
-        OnRewardUpdated?.Invoke(GetCumulativeReward());
-    }
-
-    public override void WriteDiscreteActionMask(IDiscreteActionMask actionMask)
-    {
-        if (!gameController.playerController.inventory.IsAxeBuildable())
-            actionMask.SetActionEnabled(0, 1, false);
-        if (!gameController.playerController.inventory.IsFireConstructable())
-            actionMask.SetActionEnabled(2, 2, false);
-    }
 }

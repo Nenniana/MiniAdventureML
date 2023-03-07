@@ -179,6 +179,23 @@ namespace MiniAdventure
             return false;
         }
 
+        internal bool CanPerformAction(Vector2Int newPosition, InteractionType type) 
+        {
+            if (!IsValidTile(newPosition))
+                return false;
+
+            if (type == InteractionType.Interact && OccupiedTile(newPosition))
+                return CanInteract(newPosition);
+
+            if (OccupiedTile(newPosition))
+                return false;
+
+            if (type == InteractionType.Move || type == InteractionType.ContructFire)
+                return true;
+
+            return false;
+        }
+
         private void ConstructFire(Vector2Int newPosition)
         {
             if (playerController.inventory.ConstructFire())
@@ -217,6 +234,19 @@ namespace MiniAdventure
             }
 
             OnInteractFail?.Invoke();
+            return false;
+        }
+
+        private bool CanInteract(Vector2Int newPlayerPosition) {
+            int indexOfInteraction = TranslateToInt(newPlayerPosition);
+
+            if (state[indexOfInteraction] == (float)WorldObject.Flint
+                || state[indexOfInteraction] == (float)WorldObject.WoodLog
+                || state[indexOfInteraction] == (float)WorldObject.Stick)
+                return true;
+            else if (state[indexOfInteraction] == (float)WorldObject.TreeFull)
+                return playerController.inventory.AxeAmount > 0;
+
             return false;
         }
 
