@@ -1,0 +1,65 @@
+{
+    "KeepWarm": {
+        "checkpoints": [
+            {
+                "steps": 1999994,
+                "file_path": "results\\BigScoreForWin\\KeepWarm\\KeepWarm-1999994.onnx",
+                "reward": 19083.993288590606,
+                "creation_time": 1679427626.4011462,
+                "auxillary_file_paths": [
+                    "results\\BigScoreForWin\\KeepWarm\\KeepWarm-1999994.pt"
+                ]
+            },
+            {
+                "steps": 2499969,
+                "file_path": "results\\BigScoreForWin\\KeepWarm\\KeepWarm-2499969.onnx",
+                "reward": 17473.217054263565,
+                "creation_time": 1679428828.374181,
+                "auxillary_file_paths": [
+                    "results\\BigScoreForWin\\KeepWarm\\KeepWarm-2499969.pt"
+                ]
+            },
+            {
+                "steps": 2999903,
+                "file_path": "results\\BigScoreForWin\\KeepWarm\\KeepWarm-2999903.onnx",
+                "reward": 17642.190476190477,
+                "creation_time": 1679430045.894099,
+                "auxillary_file_paths": [
+                    "results\\BigScoreForWin\\KeepWarm\\KeepWarm-2999903.pt"
+                ]
+            },
+            {
+                "steps": 3499961,
+                "file_path": "results\\BigScoreForWin\\KeepWarm\\KeepWarm-3499961.onnx",
+                "reward": 17718.04721030043,
+                "creation_time": 1679431225.2257473,
+                "auxillary_file_paths": [
+                    "results\\BigScoreForWin\\KeepWarm\\KeepWarm-3499961.pt"
+                ]
+            },
+            {
+                "steps": 3902700,
+                "file_path": "results\\BigScoreForWin\\KeepWarm\\KeepWarm-3902700.onnx",
+                "reward": 18901.904761904763,
+                "creation_time": 1679432229.7668772,
+                "auxillary_file_paths": [
+                    "results\\BigScoreForWin\\KeepWarm\\KeepWarm-3902700.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 3902700,
+            "file_path": "results\\BigScoreForWin\\KeepWarm.onnx",
+            "reward": 18901.904761904763,
+            "creation_time": 1679432229.7668772,
+            "auxillary_file_paths": [
+                "results\\BigScoreForWin\\KeepWarm\\KeepWarm-3902700.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "0.30.0",
+        "torch_version": "1.7.1+cu110"
+    }
+}

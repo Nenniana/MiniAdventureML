@@ -7,6 +7,8 @@ using Unity.MLAgents.Sensors;
 using MiniAdventure;
 using System;
 using MiniAdventure.Helpers;
+using Sirenix.OdinInspector;
+using System.Linq;
 
 public class AlphaAgent : Agent
 {
@@ -14,9 +16,14 @@ public class AlphaAgent : Agent
 
     [SerializeField]
     private GameController gameController;
+    [SerializeField]
+    private int actionMaskSize = 21;
     private InteractionType interactionType;
-
     private bool isTraining = false;
+
+    private VectorSensor observationSensor;
+
+    public VectorSensor ObservationSensor { get { observationSensor = FullViewObservation(new VectorSensor(47)); return observationSensor; } private set => observationSensor = value; }
 
     protected override void OnEnable()
     {
@@ -34,11 +41,12 @@ public class AlphaAgent : Agent
         gameController.playerController.inventory.OnStickAdded += OnStickAdded;
         gameController.OnWoodChopped += OnWoodChopped;
         gameController.OnFireConstructed += OnFireConstructed;
-        gameController.playerController.OnWarmAgain += OnWarmedAgain;
+        gameController.playerController.OnWarmAgain += OnWon;
         gameController.OnInteractFail += OnInteractFailed;
         gameController.OnWoodAttemptFail += OnWoodAttemptFailed;
         gameController.playerController.inventory.OnAxeAttemptFail += OnAxeAttemptFailed;
         gameController.playerController.inventory.OnFireAttemptFail += OnFireAttemptFailed;
+        gameController.playerController.PlayerStoodStill += OnPlayerStoodStill;
     }
 
     protected override void OnDisable()
@@ -54,11 +62,28 @@ public class AlphaAgent : Agent
         gameController.playerController.inventory.OnStickAdded -= OnStickAdded;
         gameController.OnWoodChopped -= OnWoodChopped;
         gameController.OnFireConstructed -= OnFireConstructed;
-        gameController.playerController.OnWarmAgain -= OnWarmedAgain;
+        gameController.playerController.OnWarmAgain -= OnWon;
         gameController.OnInteractFail -= OnInteractFailed;
         gameController.OnWoodAttemptFail -= OnWoodAttemptFailed;
         gameController.playerController.inventory.OnAxeAttemptFail -= OnAxeAttemptFailed;
         gameController.playerController.inventory.OnFireAttemptFail -= OnFireAttemptFailed;
+        gameController.playerController.PlayerStoodStill -= OnPlayerStoodStill;
+    }
+
+    public float[] SensorToFloatArray(VectorSensor sensor) {
+        float[] floatArray = new float[sensor.ObservationSize()];
+
+        for (int i = 0; i < sensor.ObservationSize(); i++) {
+            floatArray[i] = sensor.GetObservations()[i];
+        }
+
+        return floatArray;
+    }
+
+    private void OnPlayerStoodStill()
+    {
+        /* if (gameController.playerController.isWarmingUp)
+            AddReward(RewardController.Instance.WarmingUpReward); */
     }
 
     private void OnFireAttemptFailed()
@@ -81,10 +106,10 @@ public class AlphaAgent : Agent
         // AddReward(RewardController.Instance.InteractFailedReward);
     }
 
-    private void OnWarmedAgain()
+    private void OnWon()
     {
-        Debug.Log("OnWarmedAgain");
-        AddReward(RewardController.Instance.FinishedReward);
+        Debug.Log("Won.");
+        AddReward(RewardController.Instance.FinishedReward * gameController.playerController.Warmth);
         EndEpisode();
     }
 
@@ -98,50 +123,55 @@ public class AlphaAgent : Agent
     {
         AddReward(RewardController.Instance.FireConstructedReward);
         // Debug.Log("Fire constructed Reward");
+        // OnWon();
     }
 
     private void OnFlintAdded()
     {
-        AddReward(RewardController.Instance.FlintAddedReward);
+        if (gameController.playerController.inventory.FlintAmount >= 1)
+            AddReward(RewardController.Instance.FlintAddedReward);
         // Debug.Log("Flint added Reward");
     }
 
     private void OnStickAdded()
     {
-        AddReward(RewardController.Instance.StickAddedReward);
+        if (gameController.playerController.inventory.StickAmount >= 1)
+            AddReward(RewardController.Instance.StickAddedReward);
         // Debug.Log("Stick added Reward");
     }
 
     private void OnWoodAdded()
     {
-        AddReward(RewardController.Instance.WoodAddedReward);
+        if (gameController.playerController.inventory.WoodAmount >= 1)
+            AddReward(RewardController.Instance.WoodAddedReward);
         // Debug.Log("Wood added Reward");
     }
 
     private void OnAxeAdded()
     {
-        if (gameController.playerController.inventory.AxeAmount < 1)
+        if (gameController.playerController.inventory.AxeAmount == 1)
             AddReward(RewardController.Instance.AxeAddedReward);
-        else
+        else if (gameController.playerController.inventory.AxeAmount > 1) {
+            Debug.Log("Made an extra Axe and got reward of: " + RewardController.Instance.ExtraAxeReward + ".");
             AddReward(RewardController.Instance.ExtraAxeReward);
+        }
         // Debug.Log("Axe added Reward");
     }
 
     private void OnPlayerWarmingUp()
     {
-        AddReward(RewardController.Instance.WarmingUpReward);
-        // Debug.Log("Warming up Reward");
+        // AddReward(RewardController.Instance.WarmingUpReward);
     }
 
     private void OnPlayerCoolingDown()
     {
-        // AddReward(RewardController.Instance.CoolingDownReward);
+        AddReward(RewardController.Instance.CoolingDownReward);
     }
 
     private void OnPlayerDeath()
     {
         AddReward(RewardController.Instance.DeathReward);
-        // Debug.Log("Before Episode end reward: " + GetCumulativeReward());
+        // Debug.Log("Lost.");
         EndEpisode();
     }
 
@@ -154,32 +184,94 @@ public class AlphaAgent : Agent
         else
         {
             gameController.ResetGame();
-            // Debug.Log("After Episode end reward: " + GetCumulativeReward());
         }
+
+        OnRewardUpdated?.Invoke(GetCumulativeReward());
         // MaxStep = (int)Academy.Instance.EnvironmentParameters.GetWithDefault("per_agent_max_steps", 600.0f);
 
     }
 
     public override void CollectObservations(VectorSensor sensor)
     {
-        sensor.AddObservation(gameController.state);
+        FullViewObservation(sensor);
+    }
+
+    private VectorSensor FullViewObservation(VectorSensor sensor) {
+        if (GameManager.Instance.debugInfo)
+            Debug.Log("Player at " + gameController.playerController.playerInfo[0] + ", " + gameController.playerController.playerInfo[1] + ".");
+
+        sensor.AddObservation(gameController.playerController.playerInfo);
         sensor.AddObservation(gameController.playerController.inventory.AxeAmount);
         sensor.AddObservation(gameController.playerController.inventory.FlintAmount);
         sensor.AddObservation(gameController.playerController.inventory.WoodAmount);
         sensor.AddObservation(gameController.playerController.inventory.StickAmount);
-        sensor.AddObservation(gameController.playerController.Warmth);
+
+        AddSensorArray(sensor, gameController.closestFlints, GameManager.Instance.maxFlintsToKeep);
+        AddSensorArray(sensor, gameController.closestFires, GameManager.Instance.maxFiresToKeep);
+        AddSensorArray(sensor, gameController.closestLogs, GameManager.Instance.maxLogsToKeep);
+        AddSensorArray(sensor, gameController.closestSticks, GameManager.Instance.maxSticksToKeep);
+        AddSensorArray(sensor, gameController.closestTrees, GameManager.Instance.maxTreesToKeep);
+
+        return sensor;
+    }
+
+    private void AddSensorArray(VectorSensor sensor, List<DistanceStruct> information, int max) {
+        for (int i = 0; i < max; i++) {
+            sensor.AddObservation(information[i].GetInformation());
+            if (GameManager.Instance.debugInfo)
+                ConstructObservationString(information[i].GetInformation());
+        }
+    }
+
+    private void ConstructObservationString(float[] infoArray) {
+        Debug.Log(string.Format("Info: {3} \t at (X:{0}, Y:{1}) \t\t with Null: {2}.", infoArray[0], infoArray[1], infoArray[2], new string(((WorldObject)infoArray[3]).ToString().Take(4).ToArray())));
     }
 
     public override void OnActionReceived(ActionBuffers actions)
     {
-        if (actions.DiscreteActions[0] == 0)
+        if (actions.DiscreteActions[0] == 0) {
             gameController.playerController.ConstructAxe(actions.DiscreteActions[1]);
-        else if (actions.DiscreteActions[0] == 1)
+
+            if (GameManager.Instance.debugInfo)
+                Debug.Log("Action: Constructed Axe.");
+        }
+        else if (actions.DiscreteActions[0] == 1) {
             gameController.playerController.PerformAction(actions.DiscreteActions[2], 0);
-        else if (actions.DiscreteActions[0] == 2)
+
+            if (GameManager.Instance.debugInfo) {
+                Debug.Log("Action: Move. \t Position: " + GetPosition(actions.DiscreteActions[2]));
+            }
+        }
+        else if (actions.DiscreteActions[0] == 2) {
             gameController.playerController.PerformAction(actions.DiscreteActions[3], 1);
-        else if (actions.DiscreteActions[0] == 3)
+
+            if (GameManager.Instance.debugInfo) {
+                Debug.Log("Action: Inter. \t Position: " + GetPosition(actions.DiscreteActions[3]));
+            }
+        }
+        else if (actions.DiscreteActions[0] == 3) {
             gameController.playerController.PerformAction(actions.DiscreteActions[4], 2);
+
+            if (GameManager.Instance.debugInfo) {
+                Debug.Log("Action: Fire. \t Position: " + GetPosition(actions.DiscreteActions[4]));
+            }
+        } else {
+            Debug.Log("Action: Nothing.");
+        }
+    }
+
+    private string GetPosition(int index)
+    {
+        if (index == 0)
+            return "Up.";
+        else if (index == 1)
+            return "Right.";
+        else if (index == 2)
+            return "Down.";
+        else if (index == 3)
+            return "Left.";
+        else
+            return "None.";
     }
 
     public override void AddReward(float reward)
@@ -216,7 +308,7 @@ public class AlphaAgent : Agent
             for (int j = 0; j < 3; j++) {
                 bool canPerform = gameController.playerController.CanPerformAction(i, j);
                 
-                if (j == 1 && canPerform)
+                if (j == 1 && !canPerform)
                     counter++;
 
                 actionMask.SetActionEnabled(j + 2, i, canPerform);
@@ -224,51 +316,58 @@ public class AlphaAgent : Agent
         }
 
         if (counter == 4)
-            actionMask.SetActionEnabled(0, 3, false);
+            actionMask.SetActionEnabled(0, 2, false);
     }
-    
-    /* public override void Heuristic(in ActionBuffers actionsOut)
-    {
-        // base.Heuristic(actionsOut);
 
-        ActionSegment<int> descreteActions = actionsOut.DiscreteActions;
-
-        if (Input.GetKey(KeyCode.I))
+    public float[] GetActionMaskFloatArray() {
+        float[] floats = new float[actionMaskSize];
+        for (int i = 0; i < floats.Length; i++)
         {
-            interactionType = InteractionType.Interact;
-        }
-        else if (Input.GetKey(KeyCode.C))
-        {
-            interactionType = InteractionType.ContructFire;
-        }
-        else
-        {
-            interactionType = InteractionType.Move;
+            floats[i] = 1f;
         }
 
-        if (Input.GetKeyDown(KeyCode.UpArrow))
+        if (!gameController.playerController.inventory.IsAxeBuildable())
         {
-            descreteActions[1] = 0;
-            descreteActions[2] = int.Parse(((int)interactionType).ToString().TrimEnd('0'));
+            floats[0] = 0;
+            floats[5] = 0;
+            // actionMask.SetActionEnabled(0, 0, false);
+            // actionMask.SetActionEnabled(1, 1, false);
         }
-        else if (Input.GetKeyDown(KeyCode.RightArrow))
+        if (!gameController.playerController.inventory.IsFireConstructable())
         {
-            descreteActions[1] = 1;
-            descreteActions[2] = int.Parse(((int)interactionType).ToString().TrimEnd('0'));
+            floats[4] = 0;
+            floats[17] = 0;
+            floats[18] = 0;
+            floats[19] = 0;
+            floats[20] = 0;
+            // actionMask.SetActionEnabled(0, 3, false);
+            // actionMask.SetActionEnabled(4, 0, false);
+            // actionMask.SetActionEnabled(4, 1, false);
+            // actionMask.SetActionEnabled(4, 2, false);
+            // actionMask.SetActionEnabled(4, 3, false);
         }
-        else if (Input.GetKeyDown(KeyCode.DownArrow))
+
+        int counter = 0;
+
+        for (int i = 0; i < 4; i++)
         {
-            descreteActions[1] = 2;
-            descreteActions[2] = int.Parse(((int)interactionType).ToString().TrimEnd('0'));
+            for (int j = 0; j < 3; j++)
+            {
+                bool canPerform = gameController.playerController.CanPerformAction(i, j);
+                
+
+                if (j == 1 && !canPerform)
+                    counter++;
+
+                floats[((j + 1) * 5) + (i + 1)] = canPerform ? 1f : 0f;
+                // actionMask.SetActionEnabled(j + 2, i, canPerform);
+            }
         }
-        else if (Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            descreteActions[1] = 3;
-            descreteActions[2] = int.Parse(((int)interactionType).ToString().TrimEnd('0'));
-        }
-        else if (Input.GetKeyDown(KeyCode.A))
-        {
-            descreteActions[0] = 1;
-        }
-    } */
+
+        if (counter == 4)
+            floats[3] = 0;
+            // actionMask.SetActionEnabled(0, 2, false);
+
+        return floats;
+    }
 }

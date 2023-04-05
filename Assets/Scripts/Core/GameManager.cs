@@ -15,7 +15,12 @@ namespace MiniAdventure
 
         [HideInInspector]
         public static GameManager Instance { get; private set; }
-
+        [SerializeField]
+        [FoldoutGroup("Debug Settings")]
+        internal bool debugInfo = false;
+        [SerializeField]
+        [FoldoutGroup("Debug Settings")]
+        internal bool disableWarmthDecrease = false;
         [SerializeField]
         [FoldoutGroup("Board Settings")]
         internal int height = 8;
@@ -58,6 +63,21 @@ namespace MiniAdventure
         [SerializeField]
         [FoldoutGroup("Distance Settings")]
         internal float fireplaceMaxDistance = 2f;
+        [SerializeField]
+        [FoldoutGroup("Max Settings")]
+        internal int maxTreesToKeep = 2;
+        [SerializeField]
+        [FoldoutGroup("Max Settings")]
+        internal int maxFlintsToKeep = 2;
+        [SerializeField]
+        [FoldoutGroup("Max Settings")]
+        internal int maxSticksToKeep = 2;
+        [SerializeField]
+        [FoldoutGroup("Max Settings")]
+        internal int maxFiresToKeep = 1;
+        [SerializeField]
+        [FoldoutGroup("Max Settings")]
+        internal int maxLogsToKeep = 3;
         [SerializeField]
         [FoldoutGroup("Visual Settings")]
         internal bool showBoard = true;

@@ -1,0 +1,65 @@
+{
+    "KeepWarm": {
+        "checkpoints": [
+            {
+                "steps": 20999983,
+                "file_path": "results\\ShortEpDistInfo\\KeepWarm\\KeepWarm-20999983.onnx",
+                "reward": 346.36752136752136,
+                "creation_time": 1679385482.8970716,
+                "auxillary_file_paths": [
+                    "results\\ShortEpDistInfo\\KeepWarm\\KeepWarm-20999983.pt"
+                ]
+            },
+            {
+                "steps": 21499993,
+                "file_path": "results\\ShortEpDistInfo\\KeepWarm\\KeepWarm-21499993.onnx",
+                "reward": 427.14285714285717,
+                "creation_time": 1679386657.645508,
+                "auxillary_file_paths": [
+                    "results\\ShortEpDistInfo\\KeepWarm\\KeepWarm-21499993.pt"
+                ]
+            },
+            {
+                "steps": 21999977,
+                "file_path": "results\\ShortEpDistInfo\\KeepWarm\\KeepWarm-21999977.onnx",
+                "reward": 433.6880466472303,
+                "creation_time": 1679387820.3109558,
+                "auxillary_file_paths": [
+                    "results\\ShortEpDistInfo\\KeepWarm\\KeepWarm-21999977.pt"
+                ]
+            },
+            {
+                "steps": 22499988,
+                "file_path": "results\\ShortEpDistInfo\\KeepWarm\\KeepWarm-22499988.onnx",
+                "reward": 427.5842696629214,
+                "creation_time": 1679389021.0794427,
+                "auxillary_file_paths": [
+                    "results\\ShortEpDistInfo\\KeepWarm\\KeepWarm-22499988.pt"
+                ]
+            },
+            {
+                "steps": 22542661,
+                "file_path": "results\\ShortEpDistInfo\\KeepWarm\\KeepWarm-22542661.onnx",
+                "reward": 438.93700787401576,
+                "creation_time": 1679389120.895583,
+                "auxillary_file_paths": [
+                    "results\\ShortEpDistInfo\\KeepWarm\\KeepWarm-22542661.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 22542661,
+            "file_path": "results\\ShortEpDistInfo\\KeepWarm.onnx",
+            "reward": 438.93700787401576,
+            "creation_time": 1679389120.895583,
+            "auxillary_file_paths": [
+                "results\\ShortEpDistInfo\\KeepWarm\\KeepWarm-22542661.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "0.30.0",
+        "torch_version": "1.7.1+cu110"
+    }
+}

@@ -1,0 +1,65 @@
+{
+    "KeepWarm": {
+        "checkpoints": [
+            {
+                "steps": 1499900,
+                "file_path": "results\\ShortNoDistNulledFloat2\\KeepWarm\\KeepWarm-1499900.onnx",
+                "reward": 161.375,
+                "creation_time": 1679406161.5317523,
+                "auxillary_file_paths": [
+                    "results\\ShortNoDistNulledFloat2\\KeepWarm\\KeepWarm-1499900.pt"
+                ]
+            },
+            {
+                "steps": 1999997,
+                "file_path": "results\\ShortNoDistNulledFloat2\\KeepWarm\\KeepWarm-1999997.onnx",
+                "reward": 170.3170731707317,
+                "creation_time": 1679407353.2628474,
+                "auxillary_file_paths": [
+                    "results\\ShortNoDistNulledFloat2\\KeepWarm\\KeepWarm-1999997.pt"
+                ]
+            },
+            {
+                "steps": 2499983,
+                "file_path": "results\\ShortNoDistNulledFloat2\\KeepWarm\\KeepWarm-2499983.onnx",
+                "reward": 164.11764705882354,
+                "creation_time": 1679408575.9544551,
+                "auxillary_file_paths": [
+                    "results\\ShortNoDistNulledFloat2\\KeepWarm\\KeepWarm-2499983.pt"
+                ]
+            },
+            {
+                "steps": 2999991,
+                "file_path": "results\\ShortNoDistNulledFloat2\\KeepWarm\\KeepWarm-2999991.onnx",
+                "reward": 210.26455026455025,
+                "creation_time": 1679409781.6139536,
+                "auxillary_file_paths": [
+                    "results\\ShortNoDistNulledFloat2\\KeepWarm\\KeepWarm-2999991.pt"
+                ]
+            },
+            {
+                "steps": 3385327,
+                "file_path": "results\\ShortNoDistNulledFloat2\\KeepWarm\\KeepWarm-3385327.onnx",
+                "reward": 122.91666666666667,
+                "creation_time": 1679410731.1341312,
+                "auxillary_file_paths": [
+                    "results\\ShortNoDistNulledFloat2\\KeepWarm\\KeepWarm-3385327.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 3385327,
+            "file_path": "results\\ShortNoDistNulledFloat2\\KeepWarm.onnx",
+            "reward": 122.91666666666667,
+            "creation_time": 1679410731.1341312,
+            "auxillary_file_paths": [
+                "results\\ShortNoDistNulledFloat2\\KeepWarm\\KeepWarm-3385327.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "0.30.0",
+        "torch_version": "1.7.1+cu110"
+    }
+}

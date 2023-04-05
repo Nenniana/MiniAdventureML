@@ -12,22 +12,24 @@ namespace MiniAdventure
     public class GameController : MonoBehaviour
     {
         public Action OnWoodChopped, OnFireConstructed, OnWoodAttemptFail, OnInteractFail;
+        public Action<int,int> PlayerMoved, NullObject;
 
         [SerializeField]
         internal GameObject tileVisualPrefab;
 
         [SerializeField]
         private InfoBoardController infoBoardController;
-
         internal float[] state;
-
         internal BoardVisuals boardVisuals;
-
         internal int stateSize;
         internal int worldObjects;
         internal PlayerController playerController;
-
         internal AlphaAgent agent;
+        internal List<DistanceStruct> closestFlints;
+        internal List<DistanceStruct> closestTrees;
+        internal List<DistanceStruct> closestSticks;
+        internal List<DistanceStruct> closestFires;
+        internal List<DistanceStruct> closestLogs;
 
         // Start is called before the first frame update
         /* void Start()
@@ -35,9 +37,20 @@ namespace MiniAdventure
             FirstGame();
         } */
 
+        [Button]
+        public void FireRequestDecision()
+        {
+            agent.RequestDecision();
+        }
+        
         public void FirstGame(AlphaAgent _agent)
         {
             agent = _agent;
+            closestTrees = new List<DistanceStruct>();
+            closestFires = new List<DistanceStruct>();
+            closestFlints = new List<DistanceStruct>();
+            closestLogs = new List<DistanceStruct>();
+            closestSticks = new List<DistanceStruct>();
             InitializeState();
             SetInitialPositions();
             InitializeBoardVisuals();
@@ -46,6 +59,11 @@ namespace MiniAdventure
         [Button]
         public void ResetGame()
         {
+            closestTrees.Clear();
+            closestFires.Clear();
+            closestFlints.Clear();
+            closestLogs.Clear();
+            closestSticks.Clear();
             SetInitialPositions();
             ResetBoardVisuals();
         }
@@ -76,18 +94,82 @@ namespace MiniAdventure
                 }
                 else if (i < GameManager.Instance.initialFlintAmount + 1)
                 {
-                    state[initialPositions[i]] = ConvertEnumToFloat(WorldObject.Flint);
+                    float type = ConvertEnumToFloat(WorldObject.Flint);
+                    state[initialPositions[i]] = type;
+                    RecordObjectPosition(initialPositions[i], type, ref closestFlints);
                 }
                 else if (i < GameManager.Instance.initialFlintAmount + GameManager.Instance.initialStickAmount + 1)
                 {
-                    state[initialPositions[i]] = ConvertEnumToFloat(WorldObject.Stick);
+                    float type = ConvertEnumToFloat(WorldObject.Stick);
+                    state[initialPositions[i]] = type;
+                    RecordObjectPosition(initialPositions[i], type, ref closestSticks);
                 }
                 else
                 {
-                    state[initialPositions[i]] = ConvertEnumToFloat(WorldObject.TreeFull);
-                    // PlantTree(initialPositions[i]);
+                    float type = ConvertEnumToFloat(WorldObject.TreeFull);
+                    state[initialPositions[i]] = type;
+                    RecordObjectPosition(initialPositions[i], type, ref closestTrees);
                 }
             }
+
+            for (int i = 0; i < GameManager.Instance.maxFiresToKeep; i++) {
+                NullObjectConstruct(ref closestFires, WorldObject.Fireplace);
+            }
+
+            for (int i = 0; i < GameManager.Instance.maxLogsToKeep; i++) {
+                NullObjectConstruct(ref closestLogs, WorldObject.WoodLog);
+            }
+        }
+
+        private void NullObjectConstruct(ref List<DistanceStruct> dict, WorldObject type) {
+            dict.Add(new DistanceStruct(100, 100, 100, ConvertEnumToFloat(type), this, true));
+        }
+
+        private void RecordObjectPosition(int index, float type, ref List<DistanceStruct> dict) {
+            RecordObjectPosition(TranslateToVector2Int(index), type, ref dict);
+        }
+
+        private void RecordObjectPosition(int x, int y, float type, ref List<DistanceStruct> dict) {
+            RecordObjectPosition(new Vector2Int(x, y), type, ref dict);
+        }
+
+        private void RecordObjectPosition(Vector2Int position, float type, ref List<DistanceStruct> dict)
+        {
+            float distance = GetDistanceToPlayer(position);
+            dict.Add(new DistanceStruct(position.x, position.y, distance, type, this));
+        }
+
+        private void SwitchOutIfCloser(ref List<DistanceStruct> listDistance) {
+            // Debug.Log("Before reorder:");
+            // LogOrder(listDistance);
+            listDistance = listDistance.OrderBy(object1 => object1.dist).ToList();
+            // Debug.Log("After reorder:");
+            // LogOrder(listDistance);
+        }
+
+        private void LogOrder(List<DistanceStruct> listDistance) {
+            foreach (DistanceStruct distance in listDistance) {
+                Debug.Log(distance.dist);
+            }
+            Debug.Log("End list.");
+        }
+
+        private void NullObjectByIndex(int index) {
+            Vector2Int position = TranslateToVector2Int(index);
+            NullObject?.Invoke(position.x, position.y);
+        }
+
+        internal void SortLists() {
+            SwitchOutIfCloser(ref closestTrees);
+            SwitchOutIfCloser(ref closestFlints);
+            SwitchOutIfCloser(ref closestLogs);
+            SwitchOutIfCloser(ref closestSticks);
+            SwitchOutIfCloser(ref closestFires);
+        }
+
+        private float GetDistanceToPlayer(Vector2Int objectPosition)
+        {
+            return Vector2Int.Distance(objectPosition, playerController.GridPosition);
         }
 
         private void CreatePlayer(int index)
@@ -126,17 +208,6 @@ namespace MiniAdventure
             return position.x >= 0 && position.x < GameManager.Instance.width && position.y >= 0 && position.y < GameManager.Instance.height;
         }
 
-        /* private void PlantTree(int index) {
-            TreeController tree = new TreeController(index);
-            tree.OnGrownFully += OnTreeGrownFully;
-        }
-
-        private void OnTreeGrownFully(int index)
-        {
-            state[index] = ConvertEnumToFloat(WorldObject.TreeFull);
-            boardVisuals.UpdateTileVisuals(index);
-        } */
-
         private float ConvertEnumToFloat(WorldObject worldObject)
         {
             return (float)worldObject;
@@ -167,6 +238,7 @@ namespace MiniAdventure
             if (type == InteractionType.Move)
             {
                 MovePlayer(newPosition);
+                PlayerMoved?.Invoke(newPosition.x, newPosition.y);
                 return true;
             }
 
@@ -200,9 +272,10 @@ namespace MiniAdventure
         {
             if (playerController.inventory.ConstructFire())
             {
-                OnFireConstructed?.Invoke();
                 UpdatePosition(TranslateToInt(newPosition), WorldObject.Fireplace);
+                RecordObjectPosition(newPosition, ConvertEnumToFloat(WorldObject.WoodLog), ref closestFires);
                 playerController.AddFire(newPosition);
+                OnFireConstructed?.Invoke();
             }
         }
 
@@ -213,18 +286,21 @@ namespace MiniAdventure
             if (state[indexOfInteraction] == (float)WorldObject.Flint)
             {
                 UpdatePosition(indexOfInteraction, WorldObject.Ground);
+                NullObjectByIndex(indexOfInteraction);
                 playerController.inventory.AddFlint();
                 return true;
             }
             else if (state[indexOfInteraction] == (float)WorldObject.WoodLog)
             {
                 UpdatePosition(indexOfInteraction, WorldObject.Ground);
+                NullObjectByIndex(indexOfInteraction);
                 playerController.inventory.AddWood();
                 return true;
             }
             else if (state[indexOfInteraction] == (float)WorldObject.Stick)
             {
                 UpdatePosition(indexOfInteraction, WorldObject.Ground);
+                NullObjectByIndex(indexOfInteraction);
                 playerController.inventory.AddStick();
                 return true;
             }
@@ -258,9 +334,10 @@ namespace MiniAdventure
                 return false;
             }
 
-            OnWoodChopped?.Invoke();
             UpdatePosition(indexOfInteraction, WorldObject.Ground);
+            NullObjectByIndex(indexOfInteraction);
             SpawnWood(TranslateToVector2Int(indexOfInteraction));
+            OnWoodChopped?.Invoke();
             return true;
         }
 
@@ -274,30 +351,26 @@ namespace MiniAdventure
 
         private void CheckWood(Vector2Int woodPosition)
         {
-            if (IsValidTile(woodPosition) && !OccupiedTile(woodPosition))
+            if (IsValidTile(woodPosition) && !OccupiedTile(woodPosition)) {
                 UpdatePosition(TranslateToInt(woodPosition), WorldObject.WoodLog);
-        }
-
-        private void PickUpItem(int indexOfInteraction)
-        {
-            WorldObject objectType = (WorldObject)state[indexOfInteraction];
-            UpdatePosition(indexOfInteraction, WorldObject.Ground);
+                RecordObjectPosition(woodPosition, ConvertEnumToFloat(WorldObject.WoodLog), ref closestLogs);
+            }
         }
 
         private void MovePlayer(Vector2Int playerPosition)
         {
-            UpdatePosition(TranslateToInt(playerController.gridPosition), WorldObject.Ground);
+            UpdatePosition(TranslateToInt(playerController.GridPosition), WorldObject.Ground);
 
-            playerController.gridPosition = playerPosition;
+            playerController.GridPosition = playerPosition;
 
-            UpdatePosition(TranslateToInt(playerController.gridPosition), WorldObject.Player);
+            UpdatePosition(TranslateToInt(playerController.GridPosition), WorldObject.Player);
         }
 
-        private void UpdatePosition(int playerPosition, WorldObject worldObject)
+        private void UpdatePosition(int newObjectPosition, WorldObject worldObject)
         {
-            state[playerPosition] = (float)worldObject;
+            state[newObjectPosition] = (float)worldObject;
             if (GameManager.Instance.showBoard)
-                boardVisuals.UpdateTileVisuals(playerPosition);
+                boardVisuals.UpdateTileVisuals(newObjectPosition);
         }
     }
 }

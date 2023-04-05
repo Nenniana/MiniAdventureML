@@ -1,0 +1,65 @@
+{
+    "KeepWarm": {
+        "checkpoints": [
+            {
+                "steps": 999974,
+                "file_path": "results\\FullState\\KeepWarm\\KeepWarm-999974.onnx",
+                "reward": 14996.811926605504,
+                "creation_time": 1679417673.6024666,
+                "auxillary_file_paths": [
+                    "results\\FullState\\KeepWarm\\KeepWarm-999974.pt"
+                ]
+            },
+            {
+                "steps": 1499941,
+                "file_path": "results\\FullState\\KeepWarm\\KeepWarm-1499941.onnx",
+                "reward": 14444.589041095891,
+                "creation_time": 1679418881.4166672,
+                "auxillary_file_paths": [
+                    "results\\FullState\\KeepWarm\\KeepWarm-1499941.pt"
+                ]
+            },
+            {
+                "steps": 1999996,
+                "file_path": "results\\FullState\\KeepWarm\\KeepWarm-1999996.onnx",
+                "reward": 13229.857954545454,
+                "creation_time": 1679420062.0230458,
+                "auxillary_file_paths": [
+                    "results\\FullState\\KeepWarm\\KeepWarm-1999996.pt"
+                ]
+            },
+            {
+                "steps": 2499921,
+                "file_path": "results\\FullState\\KeepWarm\\KeepWarm-2499921.onnx",
+                "reward": 17355.3125,
+                "creation_time": 1679421272.1579938,
+                "auxillary_file_paths": [
+                    "results\\FullState\\KeepWarm\\KeepWarm-2499921.pt"
+                ]
+            },
+            {
+                "steps": 2924329,
+                "file_path": "results\\FullState\\KeepWarm\\KeepWarm-2924329.onnx",
+                "reward": null,
+                "creation_time": 1679422281.4478862,
+                "auxillary_file_paths": [
+                    "results\\FullState\\KeepWarm\\KeepWarm-2924329.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 2924329,
+            "file_path": "results\\FullState\\KeepWarm.onnx",
+            "reward": null,
+            "creation_time": 1679422281.4478862,
+            "auxillary_file_paths": [
+                "results\\FullState\\KeepWarm\\KeepWarm-2924329.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "0.30.0",
+        "torch_version": "1.7.1+cu110"
+    }
+}
