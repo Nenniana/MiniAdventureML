@@ -1,6 +1,6 @@
 # MiniAdventureML
 
-![MiniAdventure Example Scene](./READMEAssets/MiniAdventureML_BigGame.gif)
+![MiniAdventure Example Scene](./READMEAssets/MiniAdventureMLDemostration_BigGame.gif)
 
 MiniAdventureML is a Unity project developed as part of a Games thesis at the I.T. University of Copenhagen. It explores the application of ML-Agents in a mini survival game, where the agent must gather resources and craft tools to survive. This project was created in collaboration with [Hysse](https://github.com/Hysse).
 
