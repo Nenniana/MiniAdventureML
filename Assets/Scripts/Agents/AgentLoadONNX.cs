@@ -63,48 +63,48 @@ public class AgentLoadONNX : MonoBehaviour
         Debug.Log($"ActionMask Shape: {runtimeModel.GetShapeByName("action_masks")}");
     }
 
-    [Button]
-    internal void Predict(string inputName = "discrete_actions") {
-        /* float[] actionMask = new float[21];
-        for (int i = 0; i < actionMask.Length; i++) {
-            actionMask[i] = 1f;
-        } */
+    // [Button]
+    // internal void Predict(string inputName = "discrete_actions") {
+    //     /* float[] actionMask = new float[21];
+    //     for (int i = 0; i < actionMask.Length; i++) {
+    //         actionMask[i] = 1f;
+    //     } */
 
-        foreach (var layer in runtimeModel.layers) {
-            string info = "Name: " + layer.name + " does " + layer.type + " and has layout: " + " and input is: ";
-            if (layer.weights.Length > 0) {
-                foreach (float inputString in layer.weights) {
-                    info += inputString + ", ";
-                }
-            }
-            Debug.Log(info);
-        }
+    //     foreach (var layer in runtimeModel.layers) {
+    //         string info = "Name: " + layer.name + " does " + layer.type + " and has layout: " + " and input is: ";
+    //         if (layer.weights.Length > 0) {
+    //             foreach (float inputString in layer.weights) {
+    //                 info += inputString + ", ";
+    //             }
+    //         }
+    //         Debug.Log(info);
+    //     }
 
-        using Tensor inputTensor = new Tensor(1, 1, 1, 47, agent.SensorToFloatArray(agent.ObservationSensor));
-        using Tensor actionMaskTensor = new Tensor(1, 1, 1, 21, agent.GetActionMaskFloatArray());
-        Dictionary<string, Tensor> inputDictionary = new Dictionary<string, Tensor>();
-        // actionMaskTensor[0] = 0;
-        // inputTensor[0] = input;
+    //     using Tensor inputTensor = new Tensor(1, 1, 1, 47, agent.SensorToFloatArray(agent.ObservationSensor));
+    //     using Tensor actionMaskTensor = new Tensor(1, 1, 1, 21, agent.GetActionMaskFloatArray());
+    //     Dictionary<string, Tensor> inputDictionary = new Dictionary<string, Tensor>();
+    //     // actionMaskTensor[0] = 0;
+    //     // inputTensor[0] = input;
 
-        inputDictionary.Add("obs_0", inputTensor);
-        inputDictionary.Add("action_masks", actionMaskTensor);
+    //     inputDictionary.Add("obs_0", inputTensor);
+    //     inputDictionary.Add("action_masks", actionMaskTensor);
 
-        // Tensor outputTensor = worker.Execute(inputDictionary).PeekOutput("deterministic_discrete_actions");
-        // Tensor outputTensor = worker.Execute(inputDictionary).PeekOutput("discrete_actions");
-        Tensor outputTensor = worker.Execute(inputDictionary).PeekOutput(inputName);
+    //     // Tensor outputTensor = worker.Execute(inputDictionary).PeekOutput("deterministic_discrete_actions");
+    //     // Tensor outputTensor = worker.Execute(inputDictionary).PeekOutput("discrete_actions");
+    //     Tensor outputTensor = worker.Execute(inputDictionary).PeekOutput(inputName);
 
-        // Debug.Log("Floats:");
-        // foreach (Tensor tensor in outputTensor) {
-        //     foreach (float tensorfloat in tensor.AsFloats()) {
-        //         Debug.Log(tensorfloat);
-        //     }
-        // }
+    //     // Debug.Log("Floats:");
+    //     // foreach (Tensor tensor in outputTensor) {
+    //     //     foreach (float tensorfloat in tensor.AsFloats()) {
+    //     //         Debug.Log(tensorfloat);
+    //     //     }
+    //     // }
 
-        prediction.SetPrediction(outputTensor);
+    //     prediction.SetPrediction(outputTensor);
         
-        inputTensor.Dispose();
-        actionMaskTensor.Dispose();
-    }
+    //     inputTensor.Dispose();
+    //     actionMaskTensor.Dispose();
+    // }
 
     private void OnDestroy() {
         worker?.Dispose();

@@ -70,16 +70,6 @@ public class AlphaAgent : Agent
         gameController.playerController.PlayerStoodStill -= OnPlayerStoodStill;
     }
 
-    public float[] SensorToFloatArray(VectorSensor sensor) {
-        float[] floatArray = new float[sensor.ObservationSize()];
-
-        for (int i = 0; i < sensor.ObservationSize(); i++) {
-            floatArray[i] = sensor.GetObservations()[i];
-        }
-
-        return floatArray;
-    }
-
     private void OnPlayerStoodStill()
     {
         /* if (gameController.playerController.isWarmingUp)
@@ -274,14 +264,14 @@ public class AlphaAgent : Agent
             return "None.";
     }
 
-    public override void AddReward(float reward)
+    public void AddRewardCustom(float reward)
     {
         base.AddReward(reward);
 
         OnRewardUpdated?.Invoke(GetCumulativeReward());
     }
 
-    public override void SetReward(float reward)
+    public void SetRewardCustom(float reward)
     {
         base.SetReward(reward);
 
