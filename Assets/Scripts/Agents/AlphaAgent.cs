@@ -73,27 +73,27 @@ public class AlphaAgent : Agent
     private void OnPlayerStoodStill()
     {
         /* if (gameController.playerController.isWarmingUp)
-            AddReward(RewardController.Instance.WarmingUpReward); */
+            AddRewardCustom(RewardController.Instance.WarmingUpReward); */
     }
 
     private void OnFireAttemptFailed()
     {
-        // AddReward(RewardController.Instance.FireFailedReward);
+        // AddRewardCustom(RewardController.Instance.FireFailedReward);
     }
 
     private void OnAxeAttemptFailed()
     {
-        // AddReward(RewardController.Instance.AxeFailedReward);
+        // AddRewardCustom(RewardController.Instance.AxeFailedReward);
     }
 
     private void OnWoodAttemptFailed()
     {
-        // AddReward(RewardController.Instance.WoodFailedReward);
+        // AddRewardCustom(RewardController.Instance.WoodFailedReward);
     }
 
     private void OnInteractFailed()
     {
-        // AddReward(RewardController.Instance.InteractFailedReward);
+        // AddRewardCustom(RewardController.Instance.InteractFailedReward);
     }
 
     private void OnWon()
@@ -105,13 +105,13 @@ public class AlphaAgent : Agent
 
     private void OnWoodChopped()
     {
-        AddReward(RewardController.Instance.WoodChoppedReward);
+        AddRewardCustom(RewardController.Instance.WoodChoppedReward);
         // Debug.Log("Wood chopped Reward");
     }
 
     private void OnFireConstructed()
     {
-        AddReward(RewardController.Instance.FireConstructedReward);
+        AddRewardCustom(RewardController.Instance.FireConstructedReward);
         // Debug.Log("Fire constructed Reward");
         // OnWon();
     }
@@ -119,48 +119,48 @@ public class AlphaAgent : Agent
     private void OnFlintAdded()
     {
         if (gameController.playerController.inventory.FlintAmount >= 1)
-            AddReward(RewardController.Instance.FlintAddedReward);
+            AddRewardCustom(RewardController.Instance.FlintAddedReward);
         // Debug.Log("Flint added Reward");
     }
 
     private void OnStickAdded()
     {
         if (gameController.playerController.inventory.StickAmount >= 1)
-            AddReward(RewardController.Instance.StickAddedReward);
+            AddRewardCustom(RewardController.Instance.StickAddedReward);
         // Debug.Log("Stick added Reward");
     }
 
     private void OnWoodAdded()
     {
         if (gameController.playerController.inventory.WoodAmount >= 1)
-            AddReward(RewardController.Instance.WoodAddedReward);
+            AddRewardCustom(RewardController.Instance.WoodAddedReward);
         // Debug.Log("Wood added Reward");
     }
 
     private void OnAxeAdded()
     {
         if (gameController.playerController.inventory.AxeAmount == 1)
-            AddReward(RewardController.Instance.AxeAddedReward);
+            AddRewardCustom(RewardController.Instance.AxeAddedReward);
         else if (gameController.playerController.inventory.AxeAmount > 1) {
             Debug.Log("Made an extra Axe and got reward of: " + RewardController.Instance.ExtraAxeReward + ".");
-            AddReward(RewardController.Instance.ExtraAxeReward);
+            AddRewardCustom(RewardController.Instance.ExtraAxeReward);
         }
         // Debug.Log("Axe added Reward");
     }
 
     private void OnPlayerWarmingUp()
     {
-        // AddReward(RewardController.Instance.WarmingUpReward);
+        // AddRewardCustom(RewardController.Instance.WarmingUpReward);
     }
 
     private void OnPlayerCoolingDown()
     {
-        AddReward(RewardController.Instance.CoolingDownReward);
+        AddRewardCustom(RewardController.Instance.CoolingDownReward);
     }
 
     private void OnPlayerDeath()
     {
-        AddReward(RewardController.Instance.DeathReward);
+        AddRewardCustom(RewardController.Instance.DeathReward);
         // Debug.Log("Lost.");
         EndEpisode();
     }
