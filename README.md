@@ -6,7 +6,7 @@ MiniAdventureML is a Unity project developed as part of a Games thesis at the I.
 
 ## Overview
 
-MiniAdventureML is a research-driven project designed to explore how machine learning, specifically reinforcement learning through ML-Agents, can be applied to a survival game scenario. The agent's task is collect flint and sticks to craft an axe, which is then used to chop down trees and gather enough logs to build a fire. The challenge is to complete these tasks before the agent dies from exposure to the cold..
+MiniAdventureML is a research-driven project designed to explore how machine learning, specifically reinforcement learning through ML-Agents, can be applied to a survival game scenario. The agent's task is collect flint and sticks to craft an axe, which is then used to chop down trees and gather enough logs to build a fire. The challenge is to complete these tasks before the agent dies from exposure to the cold.
 
 ## Features
 
